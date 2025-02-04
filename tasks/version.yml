@@ -1,0 +1,23 @@
+# Code created with the help of ChatGPT
+- name: Get wanted Python version
+  command: "{{ python_virtualenv_python }} --version"
+  register: python_virtualenv_wanted_python_version_raw
+  changed_when: false
+
+- name: Extract wanted Python version
+  set_fact:
+    python_virtualenv_wanted_python_version: "{{ python_virtualenv_wanted_python_version_raw.stdout | regex_search('[0-9]+\\.[0-9]+\\.[0-9]+') }}"
+
+- name: Get venv Python version
+  command: "{{ python_virtualenv_dir }}/bin/python --version"
+  register: python_virtualenv_python_venv_version_raw
+  changed_when: false
+  failed_when: false  # Ignore failure in case venv does not exist
+
+- name: Extract venv Python version
+  set_fact:
+    python_virtualenv_python_venv_version: "{{ python_virtualenv_python_venv_version_raw.stdout | default(False) | regex_search('[0-9]+\\.[0-9]+\\.[0-9]+') }}"
+
+- name: Set the python_virtualenv_should_recreate fact
+  set_fact:
+    python_virtualenv_should_recreate: "{{ python_virtualenv_python_venv_version is defined and python_virtualenv_python_venv_version != python_virtualenv_wanted_python_version }}"

@@ -1,0 +1,2 @@
+python_virtualenv_should_recreate: false
+python_virtualenv_recreate: "{{ python_virtualenv_force_recreate or python_virtualenv_should_recreate }}"

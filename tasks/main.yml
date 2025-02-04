@@ -1,0 +1,24 @@
+- name: Check the versions of wanted and venv's Python interpreters
+  include_tasks: version.yml
+  when: not python_virtualenv_force_recreate
+
+- name: Remove the virtual environment
+  file:
+    path: "{{ python_virtualenv_dir }}"
+    state: absent
+  when: python_virtualenv_recreate
+
+- name: Upgrade pip inside virtual environment
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ python_virtualenv_dir }}"
+    virtualenv_python: "{{ python_virtualenv_python }}"
+  when: python_virtualenv_upgrade_pip
+
+- name: Install Python packages
+  pip:
+    name: "{{ python_virtualenv_packages }}"
+    state: latest
+    virtualenv: "{{ python_virtualenv_dir }}"
+    virtualenv_python: "{{ python_virtualenv_python }}"

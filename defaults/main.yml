@@ -1,0 +1,4 @@
+python_virtualenv_python: "{{ ansible_python_interpreter | default('python3') }}"
+python_virtualenv_force_recreate: false
+python_virtualenv_upgrade_pip: false
+python_virtualenv_packages: []
